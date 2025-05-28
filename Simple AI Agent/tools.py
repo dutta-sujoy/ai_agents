@@ -2,8 +2,6 @@ import os
 import requests
 from langchain_community.tools import DuckDuckGoSearchRun
 from langchain.tools import Tool
-from datetime import datetime
-
 
 # Create search tool
 def create_search_tool():
@@ -19,24 +17,20 @@ def get_weather(location: str) -> str:
     """Get the current weather for a location using OpenWeatherMap API."""
     api_key = os.getenv("OPENWEATHER_API_KEY")
     base_url = "https://api.openweathermap.org/data/2.5/weather"
-    
     params = {
         "q": location,
         "appid": api_key,
-        "units": "metric"  # For Celsius
+        "units": "metric"
     }
-    
     try:
         response = requests.get(base_url, params=params)
         data = response.json()
-        
         if response.status_code == 200:
             temp = data["main"]["temp"]
             feels_like = data["main"]["feels_like"]
             humidity = data["main"]["humidity"]
             weather_desc = data["weather"][0]["description"]
             wind_speed = data["wind"]["speed"]
-            
             return f"Current weather in {location}: {weather_desc}, Temperature: {temp}°C (feels like {feels_like}°C), Humidity: {humidity}%, Wind speed: {wind_speed} m/s"
         else:
             return f"Error getting weather data: {data.get('message', 'Unknown error')}"
